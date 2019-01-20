@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Usuarios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#09CACD">
+    
+    <script src=
+"https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js">
+    </script>
+    <script defer src="/__/firebase/5.5.4/firebase-app.js"></script>
+    <script defer src="/__/firebase/5.5.4/firebase-auth.js"></script>
+    <script defer src="/__/firebase/5.5.4/firebase-database.js"></script>
+    <script defer src="/__/firebase/init.js"></script>
+    <script type="module" src="js/form-navegacion.js"></script>
+    <link rel="stylesheet" href="css/misestilos2.css">
+    <link rel="shortcut icon" href="asd.ico" />
+  </head>
+  <body>
+    <form-navegacion></form-navegacion>
+    <header  id="cabecera">
+        <img class="logo" src="img/lobo.png">
+      <h1>TRABAJOS PENDIENTES</h1>
+    </header>
+    <section class="vista ">
+    <main role="main">
+        <div class="sec">
+      <ul id="lista"></ul>
+      <template id="templateDatos">
+        <li class="bla2">
+          <a class="bla"></a>
+          <div></div>
+        </li>
+      </template>
+      <template id="templateVacio">
+        <li>NO SE ENCONTRARON NINGUN TRABAJO PENDIENTE</li>
+      </template>
+    </main>
+  </section>
+    <script type="module">
+      import {Util} from "./js/util.js";
+      import {Dao} from "./js/dao.js";
+      import {Navegacion} from "./js/navegacion.js";
+      Util.registraServiceWorker();
+      const ul = document.getElementById("lista");
+      const templateDatos = document.getElementById("templateDatos");
+      const templateVacio = document.getElementById("templateVacio");
+      document.addEventListener('DOMContentLoaded', () => {
+        Navegacion.sesionInicia(["Trabajador"]);
+        Dao.observa("SolicitudServicio", "fechaDeInicio", 
+            servicio => ({
+              texto1: servicio.fechaDeInicio,
+              texto2: servicio.hora,
+              texto3: servicio
+                  ? Object.keys(servicio.fechaDeInicio).join(", ") : ""}),
+            lista => Util.agregaFilas(ul, lista, "pendientes.html",
+                templateDatos, templateVacio));
+      });
+    </script>
+  </body>
+  <footer id="pie">
+    Derechos Reservados &copy; NIGTHWOLF TEC 2018
+    </footer>
+    
+</html>

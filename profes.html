@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Comentarios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#3F51B5">
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js">
+  </script>
+  <script defer src="/__/firebase/5.5.4/firebase-app.js"></script>
+  <script defer src="/__/firebase/5.5.4/firebase-auth.js"></script>
+  <script defer src="/__/firebase/5.5.4/firebase-database.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+  <script type="module" src="js/herramientas-detalle.js"></script>
+  <script type="module" src="js/campos-usuario.js"></script>
+  <link rel="stylesheet" href="css/misestilos2.css">
+  <link rel="shortcut icon" href="asd.ico" />
+</head>
+
+<body>
+  <form class="vista let" name="vista" action="javascript:;">
+    <herramientas-detalle id="cabecera" titulo="Comentarios" regreso="index.html" agrega></herramientas-detalle>
+      <main role="main" class="blanc">
+        <p>
+          <label accesskey="U">
+            Comentarios
+            <textarea name="texto" required maxlength="2000" rows="2" autofocus></textarea>
+          </label>
+        </p>    
+        <p>
+            <label accesskey="U">
+              Frima (Nombre)
+              <input type="text" name="texto2" required>
+            </label>
+          </p>   
+
+      </main>
+  </form>
+  <script type="module">
+    import { Util } from "./js/util.js";
+    import { Dao } from "./js/dao.js";
+    import { Navegacion } from "./js/navegacion.js";
+    Util.registraServiceWorker();
+    const locationRegreso = "index.html";
+    let roles;
+    document.addEventListener('DOMContentLoaded', () => {
+      Navegacion.sesionInicia();
+      if (WebComponents.ready) {
+        carga();
+      } else {
+        document.addEventListener('WebComponentsReady', carga);
+      }
+    });
+    function carga() {
+      roles = document.getElementById("rol");
+      document.vista.addEventListener("submit", guarda);
+
+    }
+    function guarda() {
+      try {
+        const texto = document.vista.texto.value.trim();
+        const texto2 = document.vista.texto2.value.trim();
+        const modelo = {
+          Comentatio: texto,
+          Nombre: texto2 
+        };      
+              Dao.agrega("Comentarios", modelo).then(() => window.location = locationRegreso )    
+              alert("Gracias :D.");
+      } catch (e) {
+        Util.muestraError(e)
+      }
+    }
+  </script>
+</body>
+<footer id="pie">
+  Derechos Reservados &copy; NIGTHWOLF TEC 2018
+</footer>
+
+</html>

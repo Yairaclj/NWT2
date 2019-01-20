@@ -1,120 +1,129 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Easy Jobs</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Color de la barra de navegación de Chrome. -->
-    <meta name="theme-color" content="#8c0d11">
-    <!-- Configuración de la Web App Chrome y Microsoft Store. -->
-    <link rel="manifest" href="manifest.json">
-    <!-- Configuración para del acceso directo en Windows Edge/IE -->
-    <!-- Icono -->
-    <meta name="msapplication-TileImage" content="img/asd.ico">
-    <!-- Color de tile. -->
-    <meta name="msapplication-TileColor" content="#BDBDBD">
-    <!-- Configuración para Web Clip en Safari. -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" sizes="2048x2048" href="img/asd.png">
-    <link rel="apple-touch-startup-image" sizes="2048x2048"
-          href="img/asd.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
-    <script defer src="/__/firebase/5.5.4/firebase-app.js"></script>
-    <script defer src="/__/firebase/5.5.4/firebase-auth.js"></script>
-    <script defer src="/__/firebase/5.5.4/firebase-database.js"></script>
-    <script defer src="/__/firebase/init.js"></script>
-    <script type="module" src="js/boton-visibilidad.js"></script>
-    <script type="module" src="js/form-navegacion.js"></script>
-    <link rel="shortcut icon" href="asd.ico" />
-    <link rel="stylesheet" href="css/misestilos2.css">
-  </head>
 
-  <body>
-    <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
-        <form-navegacion></form-navegacion>
-        <header id="cabecera">
-          <img  class="logo" src="img/lobo.png">
-          <h1>EASY JOBS </h1>
-        </header>
-    <section class="vista">
+<head>
+  <meta charset="utf-8">
+  <title>Easy Jobs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Color de la barra de navegación de Chrome. -->
+  <meta name="theme-color" content="#8c0d11">
+  <!-- Configuración de la Web App Chrome y Microsoft Store. -->
+  <link rel="manifest" href="manifest.json">
+  <!-- Configuración para del acceso directo en Windows Edge/IE -->
+  <!-- Icono -->
+  <meta name="msapplication-TileImage" content="img/asd.ico">
+  <!-- Color de tile. -->
+  <meta name="msapplication-TileColor" content="#BDBDBD">
+  <!-- Configuración para Web Clip en Safari. -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="2048x2048" href="img/asd.png">
+  <link rel="apple-touch-startup-image" sizes="2048x2048" href="img/asd.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
+  <script defer src="/__/firebase/5.5.4/firebase-app.js"></script>
+  <script defer src="/__/firebase/5.5.4/firebase-auth.js"></script>
+  <script defer src="/__/firebase/5.5.4/firebase-database.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+  <script type="module" src="js/boton-visibilidad.js"></script>
+  <script type="module" src="js/form-navegacion.js"></script>
+  <link rel="shortcut icon" href="asd.ico" />
+  <link rel="stylesheet" href="css/misestilos2.css">
+</head>
 
-      <main role="main">
-<br>
-        <p id="campoIcono"><img class="img" id="icono" alt="Imagen"></p>
-        <div class="di">
-		<p><output id="sesionCue">Cargando sesión...</output></p>
-
-          <p><output id="sesionNombre"></output></p>
-        </div>
+<body>
+  <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+  <form-navegacion></form-navegacion>
+  <header id="cabecera">
+    <img class="logo" src="img/lobo.png">
+    <h1>EASY JOBS </h1>
+  </header>
+  <section class="vista">
+    <main role="main">
+      <br>
+      <p id="campoIcono">
+        <img class="img" id="icono" alt="Imagen">
+      </p>
+      <div class="di">
         <p>
-		<input onclick="location.href='registro.html'" id="registro" type="button" accesskey="I"
-          value="Registrate">
-          <input id="iniciaSesion" type="button" accesskey="I"
-                  value="Iniciar Sesión">
-          <input id="terminaSesion" type="button" accesskey="T"
-                 value="Terminar Sesión">
+          <output id="sesionCue">Cargando sesión...</output>
         </p>
-      </main>
-    </section>
-    <script type="module">
-      import {Util} from "./js/util.js";
-      import {Dao} from "./js/dao.js";
-      import {Navegacion} from "./js/navegacion.js";
-      Util.registraServiceWorker();
-      document.addEventListener('DOMContentLoaded', () => {
-        const sesionNombre = document.getElementById("sesionNombre");
-        const sesionCue = document.getElementById("sesionCue");
-        const campoIcono = document.getElementById("campoIcono");
-        const icono = document.getElementById("icono");
-        const iniciaSesion = document.getElementById("iniciaSesion");
-        const terminaSesion = document.getElementById("terminaSesion");
-        const registro = document.getElementById("registro");
-     Navegacion.sesionInicia();
-        Util.setVisible(campoIcono, false);
-        Util.setVisible(iniciaSesion, false);
-        Util.setVisible(terminaSesion, false);
-        Util.setVisible(registro,false);
-        iniciaSesion.addEventListener("click", onIniciaSesion);
-        terminaSesion.addEventListener("click", onTerminaSesion);
-        firebase.auth().onAuthStateChanged(
-            user => {
-              const hayUsuario = user && user.email;
-              Util.setVisible(campoIcono, hayUsuario);
-              Util.setVisible(iniciaSesion, !hayUsuario);
-              Util.setVisible(terminaSesion, hayUsuario);
-			   Util.setVisible(registro, !hayUsuario);
-              sesionNombre.textContent = "";
-              sesionCue.textContent = "";
-              Navegacion.sesionInicia();
-              if (hayUsuario) {
-                sesionCue.textContent = user.email;
-                sesionNombre.textContent = user.displayName;
-                icono.src = user.photoURL;
-                Dao.buscaCampo("Usuario", "upperCue",
-                    user.email.toUpperCase())
-                    .then(usuarios => {
-                        for (const usuario of usuarios) {
-                          Navegacion.sesionActualiza(usuario.rolIds);
-                        }
-                    })
-                    .catch(Util.muestraError);
-              }
-            },
-            Util.muestraError);
-      });
-      function onIniciaSesion() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        provider.setCustomParameters({prompt: "select_account"});
-        firebase.auth().signInWithRedirect(provider)
-      }
-      function onTerminaSesion() {
-        firebase.auth().signOut();
-      }
-    </script>
-    <footer id="pie">
-			Derechos Reservados &copy; NIGTWOLFTEC 2018
-		</footer>
-  </body>
+
+        <p>
+          <output id="sesionNombre"></output>
+        </p>
+        <p>
+          <output id="prof"><a  href="profes.html" ><img src="img/log.png" class="logo" /></a></output>
+        </p>       
+        
+      </div>
+      <p>
+        <input onclick="location.href='registro.html'" id="registro" type="button" accesskey="I" value="Registrate">
+        <input id="iniciaSesion" type="button" accesskey="I" value="Iniciar Sesión">
+        <input id="terminaSesion" type="button" accesskey="T" value="Terminar Sesión">
+      </p>
+    </main>
+  </section>
+  <script type="module">
+    import { Util } from "./js/util.js";
+    import { Dao } from "./js/dao.js";
+    import { Navegacion } from "./js/navegacion.js";
+    Util.registraServiceWorker();
+    document.addEventListener('DOMContentLoaded', () => {
+      const sesionNombre = document.getElementById("sesionNombre");
+      const sesionCue = document.getElementById("sesionCue");
+      const campoIcono = document.getElementById("campoIcono");
+      const icono = document.getElementById("icono");
+      const iniciaSesion = document.getElementById("iniciaSesion");
+      const terminaSesion = document.getElementById("terminaSesion");
+      const registro = document.getElementById("registro");
+      const prof = document.getElementById("prof");
+      Navegacion.sesionInicia();
+      Util.setVisible(campoIcono, false);
+      Util.setVisible(iniciaSesion, false);
+      Util.setVisible(terminaSesion, false);
+      Util.setVisible(registro, false);
+      Util.setVisible(prof, false);
+      iniciaSesion.addEventListener("click", onIniciaSesion);
+      terminaSesion.addEventListener("click", onTerminaSesion);
+      firebase.auth().onAuthStateChanged(
+        user => {
+          const hayUsuario = user && user.email;
+          Util.setVisible(campoIcono, hayUsuario);
+          Util.setVisible(iniciaSesion, !hayUsuario);
+          Util.setVisible(terminaSesion, hayUsuario);
+          Util.setVisible(registro, !hayUsuario);
+          Util.setVisible(prof, hayUsuario);
+          sesionNombre.textContent = "";
+          sesionCue.textContent = "";
+          Navegacion.sesionInicia();
+          if (hayUsuario) {
+            sesionCue.textContent = user.email;
+            sesionNombre.textContent = user.displayName;
+            icono.src = user.photoURL;
+            Dao.buscaCampo("Usuario", "upperCue",
+              user.email.toUpperCase())
+              .then(usuarios => {
+                for (const usuario of usuarios) {
+                  Navegacion.sesionActualiza(usuario.rolIds);
+                }
+              })
+              .catch(Util.muestraError);
+          }
+        },
+        Util.muestraError);
+    });
+    function onIniciaSesion() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      firebase.auth().signInWithRedirect(provider)
+    }
+    function onTerminaSesion() {
+      firebase.auth().signOut();
+    }
+  </script>  
+</body>
+<footer id="pie">
+  Derechos Reservados &copy; NIGTHWOLF TEC 2018
+</footer>
 </html>

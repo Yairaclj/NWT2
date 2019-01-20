@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Usuario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0027ff">
+
+    <script src=
+"https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js">
+    </script>
+    <script defer src="/__/firebase/5.5.4/firebase-app.js"></script>
+    <script defer src="/__/firebase/5.5.4/firebase-auth.js"></script>
+    <script defer src="/__/firebase/5.5.4/firebase-database.js"></script>
+    <script defer src="/__/firebase/init.js"></script>
+    <script type="module" src="js/herramientas-detalle.js"></script>
+    <script type="module" src="js/campos-usuario.js"></script>
+    <link rel="stylesheet" href="css/misestilos2.css">
+    <link rel="shortcut icon" href="asd.ico" />
+  </head>
+  <body>
+     <form class="vista" name="vista" action="javascript:;">
+    <herramientas-detalle id="cabecera" titulo="Solicitar Servicio" regreso="index.html" agrega></herramientas-detalle>
+    <main role="main" class="blanc">
+      <p>
+        <label accesskey="U">
+          Direccion
+          <input  Disabled name="dire" type="text" autofocus>
+        </label>
+      </p>
+      <p>
+        <label>
+          Hora
+          <input Disabled type="time" name="hora" required="">
+        </label>
+      </p>
+      <p>
+        <label>
+          Fecha
+          <input Disabled type="date" name="fechaDeInicio" required="">
+        </label>
+      </p>
+       <p hidden>
+        <label >
+           Nombre del Trabajador
+          <input Disabled type="text" name="nom" required="">
+        </label>
+      </p>     
+        <p hidden>
+          <label accesskey="R">
+            Tipo
+            <select id="cate" name="cate[]" ></select>
+          </label>
+        </p>
+         <select hidden name="Rol" >
+          <option selected value="Proceso">Proceso</option>
+        </select>
+    </main>
+  </form>
+    <script type="module">
+      import {Util} from "./js/util.js";
+      import {Dao} from "./js/dao.js";
+      import {Navegacion} from "./js/navegacion.js";
+      Util.registraServiceWorker();
+      const locationRegreso = "usuarios.html";
+      const parametros = new URLSearchParams(location.search);
+      const id = parametros.get("id");
+      let roles;
+      let cue;
+      document.addEventListener('DOMContentLoaded', () => {
+        Navegacion.sesionInicia(["Trabajador"]);
+        if (WebComponents.ready) {
+          carga();
+        } else  {
+          document.addEventListener('WebComponentsReady', carga);
+        }
+      });
+      function carga() {
+        roles = document.getElementById("rol");
+        Dao.busca("SolicitudServicio", id)
+            .then(modelo => {
+              if (modelo == null) {
+                alert("Servicio no encontrado.");
+                regresaAVistaMaestra();
+              } else {                        
+               
+
+               
+
+                document.vista.addEventListener("submit", guarda);
+                cue = Util.texto(modelo.dire);
+                document.title = cue;
+                document.vista.dire.value=modelo.dire;
+                document.vista.hora.value=modelo.hora;
+                document.vista.fechaDeInicio.value=modelo.fechaDeInicio;
+                document.vista.titulo.value = cue;
+ document.vista.nom.value=modelo.nom; 
+
+                 
+                
+              }
+            })
+            .catch(Util.muestraError);
+
+            Dao.busca("Trabajador", modelo.nom)
+            .then(modelo2 => {
+              if (modelo2 == null) {
+                alert("Servicio no encontrado.");
+                regresaAVistaMaestra();
+              } else {     
+                 alert("Servicio no encontrado.");
+                document.vista.nom.value=modelo.nom;   
+              }
+            })
+            .catch(Util.muestraError);
+      }
+      function guarda() {
+        try {
+          const cue = document.vista.cue.value.trim();
+          const nom = document.vista.nom.value.trim();
+          const edad = document.vista.edad.value.trim();
+          const sexo = document.vista.sexo.value.trim();
+          const apema = document.vista.apema.value.trim();
+          const apepa = document.vista.apepa.value.trim();
+          const rol = document.vista.rol.value.trim();
+          const modelo = {
+            id: id,
+            cue: cue,
+            nom: nom,
+            edad: edad,
+            sexo: sexo,
+            apema: apema,
+            apepa: apepa,
+            rol: rol, 
+            rolIds: Util.getValores(document.vista.Rol),
+            upperCue: cue.toUpperCase()};
+          Dao.modifica("Usuario", modelo)
+              .then(regresaAVistaMaestra)
+              .catch(Util.muestraError);
+        } catch (e) {
+          Util.muestraError(e)
+        }
+      }
+      function confirmaEliminar() {
+        if (confirm("Confirma la eliminación\nPerderás los datos.")) {
+          Dao.elimina("Usuario", id)
+              .then(regresaAVistaMaestra)
+              .catch(Util.muestraError);
+        }
+      }
+      function regresaAVistaMaestra() {
+        window.location = locationRegreso;
+      }
+    </script>
+  </body>
+  <footer id="pie">
+    Derechos Reservados &copy; NIGTHWOLF TEC 2018
+  </footer>
+</html>
